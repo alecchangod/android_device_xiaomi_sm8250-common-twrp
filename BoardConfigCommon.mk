@@ -85,6 +85,7 @@ TARGET_KERNEL_SOURCE := kernel/xiaomi/sm7250
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-gnu-
 KERNEL_SUPPORTS_LLVM_TOOLS := true
 TARGET_KERNEL_LLVM_BINUTILS := true
+TARGET_KERNEL_CONFIG := monet_defconfig
 endif
 
 # Platform
