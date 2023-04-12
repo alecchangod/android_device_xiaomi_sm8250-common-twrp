@@ -27,9 +27,28 @@
 
 import /init.recovery.qcom_decrypt.rc
 
+service keymaster-4-0 /system/bin/android.hardware.keymaster@4.0-service-qti
+    user root
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+
+service keystore_auth /system/bin/keystore_auth
+    oneshot
+    user system
+    group root
+    disabled
+    seclabel u:r:recovery:s0
+
+on property:crypto.ready=1 && property:hwservicemanager.ready=true
+    start keymaster-4-0
+    start keystore_auth
+
 on init
     write /sys/class/backlight/panel0-backlight/brightness 200
     write /sys/touchpanel/double_tap 1
+    setprop prepdecrypt.loglevel 2
+    start gatekeeper-1-0
 
 on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}

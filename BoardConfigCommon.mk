@@ -192,6 +192,7 @@ BOARD_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy
 TARGET_VENDOR_PROP += $(COMMON_PATH)/vendor.prop
 
 # TWRP specific build flags
+BOARD_PROVIDES_GPTUTILS := true
 TARGET_RECOVERY_QCOM_RTC_FIX := true
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
