@@ -66,28 +66,37 @@ TARGET_NO_BOOTLOADER := true
 TARGET_USES_UEFI := true
 
 # Kernel
-BOARD_BOOT_HEADER_VERSION := 2
-BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.console=ttyMSM0 androidboot.memcg=1 lpm_levels.sleep_disabled=1 msm_rtb.filter=0x237 service_locator.enable=1 androidboot.usbcontroller=a600000.dwc3 swiotlb=2048 loop.max_part=7 cgroup.memory=nokmem,nosocket reboot=panic_warm
 BOARD_KERNEL_CMDLINE += androidboot.init_fatal_reboot_target=recovery
-BOARD_KERNEL_CMDLINE += kpti=off
-BOARD_KERNEL_CMDLINE += androidboot.fstab_suffix=qcom
 BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_KERNEL_PAGESIZE := 4096
-BOARD_KERNEL_SEPARATED_DTBO := true
-BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+ifeq ($(PRODUCT_VIRTUAL_AB_OTA),true)
+BOARD_BOOT_HEADER_VERSION := 3
+else
+BOARD_BOOT_HEADER_VERSION := 2
+endif
+BOARD_KERNEL_BASE          := 0x00000000
+BOARD_KERNEL_TAGS_OFFSET   := 0x00000100
+BOARD_KERNEL_OFFSET        := 0x00008000
+BOARD_KERNEL_SECOND_OFFSET := 0x00f00000
+BOARD_RAMDISK_OFFSET       := 0x01000000
+BOARD_DTB_OFFSET           := 0x01f00000
+TARGET_KERNEL_ARCH := $(TARGET_ARCH)
+TARGET_NO_KERNEL := false
+ifneq ($(TARGET_IS_VAB),true)
+BOARD_INCLUDE_RECOVERY_DTBO := true
+endif
+BOARD_MKBOOTIMG_ARGS += --base $(BOARD_KERNEL_BASE)
+BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
+BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --second_offset $(BOARD_KERNEL_SECOND_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
-TARGET_KERNEL_ADDITIONAL_FLAGS := HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument" LLVM_IAS=1
-TARGET_KERNEL_CLANG_COMPILE := true
-ifeq (monet,$(PRODUCT_DEVICE))
-TARGET_KERNEL_SOURCE := kernel/xiaomi/sm7250
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-gnu-
-KERNEL_SUPPORTS_LLVM_TOOLS := true
-TARGET_KERNEL_LLVM_BINUTILS := true
-TARGET_KERNEL_CONFIG := monet_defconfig
-TARGET_KERNEL_CLANG_VERSION := trb
-TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-trb
+ifneq ($(TARGET_PREBUILT_DTB),)
+BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
 endif
 
 # Platform
