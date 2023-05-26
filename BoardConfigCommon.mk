@@ -86,8 +86,8 @@ TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-gnu-
 KERNEL_SUPPORTS_LLVM_TOOLS := true
 TARGET_KERNEL_LLVM_BINUTILS := true
 TARGET_KERNEL_CONFIG := monet_defconfig
-TARGET_KERNEL_CLANG_VERSION := trb
-TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-trb
+TARGET_KERNEL_CLANG_VERSION := proton
+TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/proton-clang
 endif
 
 # Platform
